@@ -12,7 +12,7 @@ const vk = new VK({
 vk.updates.on("message", async (context) => {
     if (!context.text) return;
 
-    let message = context.text;
+    let message = context.text.toLowerCase();
 
     if (message[0] === "/") {
         message = message.slice(1, message.length);
