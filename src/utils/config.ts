@@ -14,6 +14,7 @@ const getEnvVariable = (key: string) => {
 
 const config = {
     VK_TOKEN: getEnvVariable("VK_TOKEN"),
+    LOG_LEVEL: getEnvVariable("LOG_LEVEL"),
 };
 
 export default config;

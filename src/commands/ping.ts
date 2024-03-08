@@ -1,4 +1,5 @@
 import { BotCommand, BotCommandHandler, BotCommandInfo } from ".";
+import logger from "../utils/logger";
 
 const info: BotCommandInfo = {
     name: "Ping",
@@ -6,7 +7,12 @@ const info: BotCommandInfo = {
 };
 
 const execute: BotCommandHandler = async (context) => {
-    context.reply("Понг");
+    const createdTime = context.createdAt * 1000;
+    const currentTime = Date.now();
+
+    logger.debug(createdTime, currentTime);
+
+    context.reply(`Понг (${Math.abs(createdTime - currentTime)} мс)`);
 };
 
 const ping: BotCommand = {
