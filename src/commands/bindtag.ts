@@ -9,7 +9,7 @@ const info: BotCommandInfo = {
 
 const execute: BotCommandHandler = async (context) => {
     const tag = context.text?.split(" ")[1];
-    const tagFormat = /.{3,12}#\d{4}$/; // ancient cursed letters (don't read it aloud)
+    const tagFormat = /.{3,12}#\d+$/; // ancient cursed letters (don't read it aloud)
 
     if (!tag) {
         context.reply("Укажи свой BattleTag после команды!");
