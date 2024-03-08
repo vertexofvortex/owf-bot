@@ -1,5 +1,5 @@
-function hello(message: string): void {
-    console.log(message);
-}
+import { VK } from "vk-io";
 
-hello("hello world");
+const vk = new VK({
+    token: "token",
+});

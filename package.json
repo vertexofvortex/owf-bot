@@ -19,7 +19,10 @@
     "@swc/core": "^1.4.6",
     "@types/node": "^20.11.25",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-prettier": "0.0.0-empty",
     "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
     "typescript": "^5.4.2"
   }
 }
