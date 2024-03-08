@@ -1,5 +1,6 @@
 import { ContextDefaultState, MessageContext } from "vk-io";
 import ping from "./ping";
+import bindtag from "./bindtag";
 
 export type BotCommandHandler = (
     context: MessageContext<ContextDefaultState> & object
@@ -17,6 +18,7 @@ export interface BotCommand {
 
 const commands = {
     ping: ping,
+    bindtag: bindtag,
 };
 
 export default commands;

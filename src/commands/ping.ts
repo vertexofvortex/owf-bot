@@ -1,5 +1,4 @@
 import { BotCommand, BotCommandHandler, BotCommandInfo } from ".";
-import logger from "../utils/logger";
 
 const info: BotCommandInfo = {
     name: "Ping",

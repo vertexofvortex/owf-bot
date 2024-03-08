@@ -19,7 +19,9 @@ vk.updates.on("message", async (context) => {
     }
 
     for (const command of Object.values(commands)) {
-        if (command.info.triggers.some((trigger) => trigger === message)) {
+        if (
+            command.info.triggers.some((trigger) => message.startsWith(trigger))
+        ) {
             try {
                 await command.execute(context);
 
