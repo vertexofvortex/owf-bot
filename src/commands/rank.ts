@@ -1,4 +1,5 @@
 import { BotCommand, BotCommandHandler, BotCommandInfo } from ".";
+import overfast from "../overfast/overfast";
 import redis from "../storage/redis";
 import logger from "../utils/logger";
 import axios from "axios";
@@ -18,20 +19,26 @@ const execute: BotCommandHandler = async (context) => {
 
     if (!tag) return;
 
-    axios
-        .get(
-            `https://overfast-api.tekrop.fr/players/${tag.replace("#", "-")}/summary`
-        )
+    overfast
+        .get_player_summary(tag.replace("#", "-"))
         .then((response) => {
-            const ranks = response.data.competitive.pc;
+            const ranks = response.data.competitive?.pc;
+
+            if (!ranks) {
+                context.reply(
+                    "Кажется, этот пользователь ещё не заходил в соревновательную игру"
+                );
+
+                return;
+            }
 
             context.reply(
                 `Текущие звания игрока ${response.data.username} в ${ranks.season} сезоне:
 
-🛡️ Танк: ${ranks.tank ? `${ranks.tank.division} ${ranks.tank.tier}` : "❌ не откалиброван"}
-🔫 Урон: ${ranks.damage ? `${ranks.damage.division} ${ranks.damage.tier}` : "❌ не откалиброван"}
-➕ Саппорт: ${ranks.support ? `${ranks.support.division} ${ranks.support.tier}` : "❌ не откалиброван"}
-♻️ Открытая очередь: ${ranks.open ? `${ranks.open.division} ${ranks.open.tier}` : "❌ не откалиброван"}`
+🛡️ Танк -- ${ranks.tank ? `${ranks.tank.division} ${ranks.tank.tier}` : "❌ не откалиброван"}
+🔫 Урон -- ${ranks.damage ? `${ranks.damage.division} ${ranks.damage.tier}` : "❌ не откалиброван"}
+➕ Саппорт -- ${ranks.support ? `${ranks.support.division} ${ranks.support.tier}` : "❌ не откалиброван"}
+♻️ Открытая очередь -- ${ranks.open ? `${ranks.open.division} ${ranks.open.tier}` : "❌ не откалиброван"}`
             );
         })
         .catch((error) => {
