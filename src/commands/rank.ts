@@ -1,6 +1,9 @@
 import { BotCommand, BotCommandHandler, BotCommandInfo } from ".";
+import parseRank from "../locales/helpers/parseRank";
+import { Components } from "../overfast/openapi";
 import overfast from "../overfast/overfast";
 import redis from "../storage/redis";
+import Template, { Templates } from "../template/template";
 import logger from "../utils/logger";
 import axios from "axios";
 
@@ -19,32 +22,37 @@ const execute: BotCommandHandler = async (context) => {
 
     if (!tag) return;
 
+    const reply = await context.reply("Запрашиваю результаты у Близов...");
+
     overfast
         .get_player_summary(tag.replace("#", "-"))
         .then((response) => {
             const ranks = response.data.competitive?.pc;
 
             if (!ranks) {
-                context.reply(
-                    "Кажется, этот пользователь ещё не заходил в соревновательную игру"
-                );
+                reply.editMessage({
+                    message:
+                        "Кажется, этот пользователь ещё не заходил в соревновательную игру",
+                });
 
                 return;
             }
 
-            context.reply(
-                `Текущие звания игрока ${response.data.username} в ${ranks.season} сезоне:
-
-🛡️ Танк -- ${ranks.tank ? `${ranks.tank.division} ${ranks.tank.tier}` : "❌ не откалиброван"}
-🔫 Урон -- ${ranks.damage ? `${ranks.damage.division} ${ranks.damage.tier}` : "❌ не откалиброван"}
-➕ Саппорт -- ${ranks.support ? `${ranks.support.division} ${ranks.support.tier}` : "❌ не откалиброван"}
-♻️ Открытая очередь -- ${ranks.open ? `${ranks.open.division} ${ranks.open.tier}` : "❌ не откалиброван"}`
-            );
+            reply.editMessage({
+                message: Template.parse(Templates.Rank, {
+                    username: response.data.username,
+                    seasonNumber: ranks.season,
+                    tankRank: parseRank(ranks.tank),
+                    damageRank: parseRank(ranks.damage),
+                    supportRank: parseRank(ranks.support),
+                    openQueueRank: parseRank(ranks.open),
+                }),
+            });
         })
         .catch((error) => {
-            context.reply(
-                `Ошибка получения данных (${error.response.status}) =(`
-            );
+            reply.editMessage({
+                message: `Ошибка получения данных =(\n\nHTTP-код: ${error.response.status}`,
+            });
 
             logger.error(
                 `An error occured while fetching stats for player ${tag}`
