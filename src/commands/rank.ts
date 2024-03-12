@@ -1,11 +1,9 @@
 import { BotCommand, BotCommandHandler, BotCommandInfo } from ".";
 import parseRank from "../locales/helpers/parseRank";
-import { Components } from "../overfast/openapi";
 import overfast from "../overfast/overfast";
 import redis from "../storage/redis";
 import Template, { Templates } from "../template/template";
 import logger from "../utils/logger";
-import axios from "axios";
 
 const info: BotCommandInfo = {
     name: "Rank",
@@ -20,7 +18,11 @@ const execute: BotCommandHandler = async (context) => {
     const senderId = replyMessage.senderId;
     const tag = await redis.get(String(senderId));
 
-    if (!tag) return;
+    if (!tag) {
+        context.reply("Пользователь не привязал свой тег к боту =(");
+
+        return;
+    }
 
     const reply = await context.reply("Запрашиваю результаты у Близов...");
 
@@ -39,7 +41,7 @@ const execute: BotCommandHandler = async (context) => {
             }
 
             reply.editMessage({
-                message: Template.parse(Templates.Rank, {
+                message: Template.parse(Templates.MessageRanks, {
                     username: response.data.username,
                     seasonNumber: ranks.season,
                     tankRank: parseRank(ranks.tank),

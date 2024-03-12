@@ -2,6 +2,7 @@ import { BotCommand, BotCommandHandler, BotCommandInfo } from ".";
 import redis from "../storage/redis";
 import axios from "axios";
 import logger from "../utils/logger";
+import overfast from "../overfast/overfast";
 
 const info: BotCommandInfo = {
     name: "Stats",
@@ -9,8 +10,12 @@ const info: BotCommandInfo = {
 };
 
 const execute: BotCommandHandler = async (context) => {
-    const userId = context.senderId;
-    const tag = await redis.get(String(userId));
+    const replyMessage = context.replyMessage;
+
+    if (!replyMessage) return;
+
+    const senderId = replyMessage.senderId;
+    const tag = await redis.get(String(senderId));
 
     if (!tag) {
         context.reply("Пользователь не привязал свой тег к боту =(");
@@ -18,23 +23,7 @@ const execute: BotCommandHandler = async (context) => {
         return;
     }
 
-    axios
-        .get(`https://overfast-api.tekrop.fr/players/${tag.replace("#", "-")}`)
-        .then((response) => {
-            context.reply(
-                `Никнейм: ${response.data.summary.username}, подпись: ${response.data.summary.title}`
-            );
-        })
-        .catch((error: any) => {
-            context.reply(
-                `Ошибка получения данных (${error.response.status}) =(`
-            );
-
-            logger.error(
-                `An error occured while fetching stats for player ${tag}`
-            );
-            logger.trace(error);
-        });
+    overfast.get_player_stats(tag.replace("#", "-")).then();
 };
 
 const stats: BotCommand = {

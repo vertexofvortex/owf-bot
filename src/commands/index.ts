@@ -3,6 +3,7 @@ import ping from "./ping";
 import bindtag from "./bindtag";
 import stats from "./stats";
 import rank from "./rank";
+import hero from "./hero";
 
 export type BotCommandHandler = (
     context: MessageContext<ContextDefaultState> & object
@@ -23,6 +24,7 @@ const commands = {
     bindtag: bindtag,
     stats: stats,
     rank: rank,
+    hero: hero,
 };
 
 export default commands;

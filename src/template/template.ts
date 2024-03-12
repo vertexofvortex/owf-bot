@@ -1,7 +1,11 @@
 import { readFileSync } from "fs";
 
 export enum Templates {
-    Rank = "rank",
+    SegmentRanks = "segments/ranks",
+    SegmentHero = "segments/hero",
+
+    MessageRanks = "ranks_message",
+    MessageHero = "hero_message",
 }
 
 export interface TemplateValues {

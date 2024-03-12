@@ -1,0 +1,9 @@
+Статистика игрока {{username}} <<{{title}}>>, {{seasonNumber}} сезон
+
+▌︎ Звания
+▌︎
+{{ranksSegment}}
+
+▌︎ Персонажи
+▌︎
+{{heroesSegment}}
